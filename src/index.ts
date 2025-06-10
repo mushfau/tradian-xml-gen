@@ -5,7 +5,7 @@ import excelToJson from 'convert-excel-to-json';
 import { Awmds } from './types/awmds';
 import { Bol_segment } from './types/bol-segment';
 
-export type XMLType = 'masterBL' | 'houseBL' | 'addMasterBL' | 'addHouseBL';
+export type XMLType = 'MBL' | 'HBL' | 'ADDMBL' | 'ADDHBL';
 
 
 export interface Config {
@@ -18,7 +18,6 @@ export interface Config {
 }
 
 const defaultConfig: Partial<Config> = {
-    type: 'masterBL',
     mainNodeName: 'Awmds',
 }
 
@@ -29,6 +28,33 @@ export default class Tradian {
         console.log("Starting XML generation process...");
     }
 
+    /**
+     * Generates XML from the provided Excel data.
+     * @returns {string} The generated XML string.
+     */
+
+    // generateXML() {
+    //     let inputExcelData: any;
+    //     if (this.config.cli) {
+    //         inputExcelData = excelToJson({ source: this.config.inputData });
+    //     } else {
+    //         inputExcelData = this.config.inputData;
+    //     }
+    //     if (!inputExcelData.Header || !inputExcelData.BLs) {
+    //         throw "Invalid sheet names"
+    //     }
+
+    //     let xmlDataStr = '';
+
+    //     if (this.config.type === 'MBL' || this.config.type === 'ADDMBL') {
+    //         xmlDataStr = "<Master_BL_XML/>"
+    //     }
+    //     if (this.config.type === 'HBL' || this.config.type === 'ADDHBL') {
+    //         xmlDataStr = "<House_BL_XML/>"
+    //     }
+
+    //     return `<?xml version="1.0" encoding="utf-8"?>\n${xmlDataStr}`;
+    // }
     generateXML() {
 
         let inputExcelData: any;
@@ -58,8 +84,6 @@ export default class Tradian {
         const header = convertArray(inputExcelData.Header)[0];
         const bls = convertArray(inputExcelData.BLs);
 
-        // console.log("bls", bls)
-
         const builderOptions = {
             processEntities: false,
             format: true,
@@ -76,4 +100,4 @@ export default class Tradian {
     }
 }
 
-export { Tradian };
+export { Tradian, groupBy };

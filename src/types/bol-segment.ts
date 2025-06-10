@@ -34,7 +34,7 @@ export type Notify = {
 }
 
 export type Consignee = {
-    Notify_code: string
+    Consignee_code: string
     Consignee_name: string
     Consignee_address: string
 }
