@@ -25,7 +25,7 @@ export default class Tradian {
     constructor(private config: Config) {
         this.config = { ...defaultConfig, ...config };
 
-        console.log("Starting XML generation process...");
+        console.log("Starting XML generation process v1.0 ...");
     }
 
     /**
@@ -90,13 +90,30 @@ export default class Tradian {
             ignoreAttributes: false,
             arrayNodeName: this.config.mainNodeName,
         };
-        const general_segment: General_segment = createGeneralSegment(header, bls);
-        const bol_segment: Bol_segment[] = createBolSegment(groupBy(bls, "bol_no"));
 
-        const awmds: Awmds[] = [{ General_segment: general_segment, Bol_segment: bol_segment }];
+        // console.log("Bls for BOLs:", blsForBol);
+        const bol_segments: any = createBolSegment(bls);
+        const general_segment: General_segment = createGeneralSegment(header, bls, bol_segments.packageCount, bol_segments.grossMass);
+
+        const awmds: Awmds[] = [{ General_segment: general_segment, Bol_segment: bol_segments.bol_segments }];
         const builder = new XMLBuilder(builderOptions);
         let xmlDataStr = builder.build(awmds);
         return `<?xml version="1.0" encoding="utf-8"?>\n${xmlDataStr}`;
+
+        // const builderOptions = {
+        //     processEntities: false,
+        //     format: true,
+        //     ignoreAttributes: false,
+        //     arrayNodeName: this.config.mainNodeName,
+        // };
+        // const general_segment: General_segment = createGeneralSegment(header, bls);
+        // const bol_segment: Bol_segment[] = createBolSegment(groupBy(bls, "bol_no"));
+
+        // const awmds: Awmds[] = [{ General_segment: general_segment, Bol_segment: bol_segment }];
+        // const builder = new XMLBuilder(builderOptions);
+        // let xmlDataStr = builder.build(awmds);
+        // return `<?xml version="1.0" encoding="utf-8"?>\n${xmlDataStr}`;
+        // return "done"
     }
 }
 
