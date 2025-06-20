@@ -17,7 +17,7 @@ export const groupBy = (array: any, key: any) => array.reduce((result: any, item
 
 
 export const countKeys = (obj: any, keyType: string) => {
-    if (keyType === 'container_no' && Object.keys(obj)[0] === 'undefined') {
+    if (keyType === 'container_no' && (Object.keys(obj)[0] === 'undefined' || Object.keys(obj)[0] === 'null')) {
         return 0;
     }
     return Object.keys(obj).length;
@@ -80,129 +80,12 @@ export const createGeneralSegment = (hd: Header, bls: BL[], packageCount: number
 }
 
 
-export const createBolSegment_ = (bls: any): Bol_segment[] => {
-    const bol_segments: Bol_segment[] = [];
-
-    Object.keys(bls).map((key, blIndex: number) => {
-        const bolItems: any = bls[key];
-        const bolItemsGrpByCtn = groupBy(bolItems, "container_no")
-
-        const bol_segment = {
-            Bol_id: {
-                Bol_reference: bolItems[0]['bol_no'],
-                Line_number: blIndex,
-                Bol_nature: 23,
-                Bol_type_code: "BL",
-                Master_bol_ref_number: bolItems[0]['master_bol_ref_number'] || "",
-                Unique_carrier_reference: ""
-            },
-            Load_unload_place: {
-                Port_of_origin_code: bolItems[0]['country_of_origin'],             // Country of Origin 
-                Original_port_of_loading_code: bolItems[0]['original_port_of_loading'], // Original Port of Loading    
-                Place_of_delivery_code: bolItems[0]['place_of_delivery'],           // Place of Delivery
-                Place_of_ultimate_destination_code: bolItems[0]['place_of_receipt'], // Place of Receipt 
-                Place_of_loading_code: bolItems[0]['port_of_loading'],             // Port of Loading      
-                Place_of_unloading_code: bolItems[0]['place_of_discharge'],          // Place of Discharge
-            },
-
-            // <Port_of_origin_code>AF</Port_of_origin_code>
-            // <Original_port_of_loading_code>MVMLE</Original_port_of_loading_code>
-            // <Place_of_delivery_code>MVMLE</Place_of_delivery_code>
-            // <Place_of_ultimate_destination_code>MVMLE</Place_of_ultimate_destination_code>
-            // <Place_of_loading_code>MVMLE</Place_of_loading_code>
-            // <Place_of_unloading_code>MVMLE</Place_of_unloading_code>
-
-            Traders_segment: {
-                Exporter: {
-                    Exporter_code: "",
-                    Exporter_name: bolItems[0]['shipper_name']?.replaceAll("&", "&amp;"),
-                    Exporter_address: bolItems[0]['shipper_address']
-                },
-                FreightForwarder: {
-                    FFName: "",
-                    FFId: bolItems[0]['freight_forwarder'] || ""
-                },
-                Notify: {
-                    Notify_code: "",
-                    Notify_name: bolItems[0]['notify_name']?.replaceAll("&", "&amp;"),
-                    Notify_address: bolItems[0]['notify_address']
-                },
-                Consignee: {
-                    Consignee_code: bolItems[0]['consignee_code'],
-                    Consignee_name: bolItems[0]['consignee_name']?.replaceAll("&", "&amp;"),
-                    Consignee_address: bolItems[0]['consignee_address']
-                }
-            },
-            ctn_segment: [] as any,
-            Goods_segment: [] as any,
-            Value_segment: {}
-        }
-        bolItems.map((bolItem: any, itemIndex: number) => {
-            if (bolItem['container_no']) {
-                bol_segment.ctn_segment.push({
-                    Ctn_reference: bolItem['container_no'],
-                    Number_of_packages: bolItem['container_no_of_packages'],
-                    Package_type: bolItem['package_type'],
-                    Type_of_container: bolItem['container_type'],
-                    Empty_Full: "1/1",
-                    Marks1: bolItem['seal_no'],
-                    Marks2: "",
-                    Marks3: "",
-                    Sealing_Party: "",
-                    Empty_weight: 0,
-                    Goods_Weight: bolItem['container_gross_weight']
-                });
-                bol_segment.Goods_segment.push({
-                    Number_of_packages: bolItem['no_of_packages'],
-                    Package_type_code: bolItem['package_type_code'],
-                    // Package_type: bolItem['package_type'],
-                    Gross_mass: bolItem['goods_gross_weight'],
-                    Shipping_marks: bolItem['shipping_marks'],
-                    Goods_description: bolItem['goods_description']?.replaceAll("&", "&amp;"),
-                    Container_item_references: {
-                        Ctn_item_reference: bolItem['container_no']
-                    },
-                    Num_of_ctn_for_this_bol: 1 // check on this
-                })
-            } else {
-                bol_segment.Goods_segment.push({
-                    Quantity: bolItem['quantity'],
-                    Quantity_type_code: bolItem['quantity_type'],
-                    Number_of_packages: bolItem['no_of_packages'],
-                    Package_type_code: bolItem['package_type_code'],
-                    // Package_type: bolItem['package_type'],
-                    Gross_mass: bolItem['goods_gross_weight'],
-                    Shipping_marks: bolItem['shipping_marks'],
-                    Goods_description: bolItem['goods_description']?.replaceAll("&", "&amp;"),
-                    // Container_item_references: {
-                    //     Ctn_item_reference: bolItem['container_no']
-                    // },
-                    Num_of_ctn_for_this_bol: 0 // check on this
-                })
-            }
-
-
-            Value_segment: {
-                // Freight_segment: {
-                //    PC_indicator: "x",
-                //     Freight_value: 0,
-                //     Freight_currency: "x"
-                // }
-            }
-        })
-
-        bol_segments.push(bol_segment as any)
-    })
-
-    return bol_segments
-}
-
-
 export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packageCount: number, grossMass: number } => {
     let packageCount = 0;
     let grossMass = 0;
     const ctnGroups = groupBy(bls, "container_no");
     const cntCount = countKeys(ctnGroups, "container_no")
+
     const grpdBols = groupBy(bls, "bol_no");
 
     const blsForBol: any[] = [];
@@ -212,7 +95,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
 
         if (cntCount === 0) {
             // Case 0: M containers, 1 goods, 1 bol
-            console.log("Case 0: 0 ctns, M goods, 1 bol");
+            // console.log("Case 0: 0 ctns, M goods, 1 bol");
 
             blsForBol.push({
                 bol_no: bol_no,
@@ -224,7 +107,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
             // Case 1: 0 container, M goods, 1 bol
             if (bolGrp.length === 1) {
 
-                console.log("Case 1: 1 ctn, 1 goods, 1 bol");
+                // console.log("Case 1: 1 ctn, 1 goods, 1 bol");
                 blsForBol.push({
                     bol_no: bol_no,
                     type: "1C1G",
@@ -235,7 +118,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 const grpdCtns = groupBy(bolGrp, "container_no");
 
                 if (Object.keys(grpdCtns).length === 1) {
-                    console.log("Case 2: 1 ctn, multiple goods, 1 bol");
+                    // console.log("Case 2: 1 ctn, multiple goods, 1 bol");
                     blsForBol.push({
                         bol_no: bol_no,
                         type: "1CMG",
@@ -246,7 +129,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     const grpdGoods = groupBy(bolGrp, "goods_description");
 
                     if (Object.keys(grpdGoods).length === 1) {
-                        console.log("Case 3: multiple ctns, 1 goods, 1 bol");
+                        // console.log("Case 3: multiple ctns, 1 goods, 1 bol");
                         Object.keys(grpdGoods).forEach((goods_description) => {
                             const goodsGrp = grpdGoods[goods_description];
                             blsForBol.push({
@@ -256,7 +139,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                             });
                         });
                     } else {
-                        console.log("Case 4: multiple ctns, multiple goods, 1 bol");
+                        // console.log("Case 4: multiple ctns, multiple goods, 1 bol");
                         blsForBol.push({
                             bol_no: bol_no,
                             type: "MCMG",
@@ -266,24 +149,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 }
             }
         }
-        console.log("\n")
-        // const grpdCtns = groupBy(bolGrp, "container_no");
-        // Object.keys(grpdCtns).forEach((container_no) => {
-        //     const ctnGrp = grpdCtns[container_no];
-        //     console.log(bolGrp.length, ctnGrp.length, "Container Group for BOL:", bol_no, "Container No:", container_no);
-        //     // console.log("Container Group for BOL:", bol_no, "Container No:", container_no, ctnGrp.length);
-        // })
-
-
-        // console.log("Container Groups for BOL:", bol_no, Object.length);
-        // const grpdGoods = groupBy(bolGrp, "goods_description");
-
-        // console.log("Container Groups for BOL:", bol_no, grpdGoods);
-
-        // console.log("BOL Group:", bol_no, bolGrp);
-        // blsForBol.forEach((bl: any) => {
-        //     bl.bol_no = bol_no; // Ensure bol_no is set for each BL
-        // });
+        // console.log("\n")
     });
 
     const bol_segments: Bol_segment[] = [];
@@ -502,34 +368,6 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     })
                 }
             })
-
-            // bolItem.items.forEach((item: any) => {
-            //     packageCount += bolItem.items[0]['container_no_of_packages'] * 1;
-            //     grossMass += bolItem.items[0]['container_gross_weight'] * 1;
-
-            //     bol_segment.ctn_segment.push({
-            //         Ctn_reference: item['container_no'],
-            //         Number_of_packages: item['container_no_of_packages'],
-            //         Package_type: item['package_type'],
-            //         Type_of_container: item['container_type'],
-            //         Empty_Full: "1/1",
-            //         Marks1: item['seal_no'],
-            //         Marks2: "",
-            //         Marks3: "",
-            //         Sealing_Party: "",
-            //         Empty_weight: 0,
-            //         Goods_Weight: item['container_gross_weight']
-            //     })
-            // })
-
-            // bol_segment.Goods_segment.push({
-            //     Number_of_packages: bolItem.items[0]['no_of_packages'],
-            //     Package_type_code: bolItem.items[0]['package_type_code'],
-            //     Gross_mass: bolItem.items[0]['goods_gross_weight'],
-            //     Shipping_marks: bolItem.items[0]['shipping_marks'],
-            //     Goods_description: bolItem.items[0]['goods_description']?.replaceAll("&", "&amp;"),
-            //     Num_of_ctn_for_this_bol: bolItem.items.length // check on this
-            // })
         }
 
         bol_segments.push(bol_segment)

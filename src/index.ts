@@ -25,7 +25,7 @@ export default class Tradian {
     constructor(private config: Config) {
         this.config = { ...defaultConfig, ...config };
 
-        console.log("Starting XML generation process v1.0 ...");
+        console.log("Starting XML generation process v1.0.3 ...");
     }
 
     /**
@@ -84,6 +84,7 @@ export default class Tradian {
         const header = convertArray(inputExcelData.Header)[0];
         const bls = convertArray(inputExcelData.BLs);
 
+
         const builderOptions = {
             processEntities: false,
             format: true,
@@ -91,7 +92,6 @@ export default class Tradian {
             arrayNodeName: this.config.mainNodeName,
         };
 
-        // console.log("Bls for BOLs:", blsForBol);
         const bol_segments: any = createBolSegment(bls);
         const general_segment: General_segment = createGeneralSegment(header, bls, bol_segments.packageCount, bol_segments.grossMass);
 
@@ -117,4 +117,4 @@ export default class Tradian {
     }
 }
 
-export { Tradian, groupBy };
+export { Tradian, groupBy, convertArray, createBolSegment };
