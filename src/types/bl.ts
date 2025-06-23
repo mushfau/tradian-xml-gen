@@ -29,6 +29,7 @@ export type BL = {
     container_type: string
     seal_no: string
     container_gross_weight: string
+    volume_in_cubic_meters: string
     container_no_of_packages: string
     package_type: string
 }
