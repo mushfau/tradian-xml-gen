@@ -213,7 +213,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     // Container_item_references: {
                     //     Ctn_item_reference: ""
                     // },
-                    Volume_in_cubic_meters: item['volume_in_cubic_meters'],
+                    Volume_in_cubic_meters: item['volume_in_cubic_meters'] * 1,
                     Num_of_ctn_for_this_bol: 0 // check on this
                 })
             })
@@ -246,7 +246,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Container_item_references: {
                         Ctn_item_reference: item['container_no']
                     },
-                    Volume_in_cubic_meters: item['volume_in_cubic_meters'],
+                    Volume_in_cubic_meters: item['volume_in_cubic_meters'] * 1,
                     Num_of_ctn_for_this_bol: 1 // check on this
                 })
             })
@@ -280,7 +280,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Container_item_references: {
                         Ctn_item_reference: bolItem.items[0]['container_no']
                     },
-                    Volume_in_cubic_meters: item['volume_in_cubic_meters'],
+                    Volume_in_cubic_meters: item['volume_in_cubic_meters'] * 1,
                     Num_of_ctn_for_this_bol: 1 // check on this
                 })
             })
@@ -312,7 +312,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 Gross_mass: bolItem.items[0]['goods_gross_weight'],
                 Shipping_marks: bolItem.items[0]['shipping_marks'],
                 Goods_description: bolItem.items[0]['goods_description']?.replaceAll("&", "&amp;"),
-                Volume_in_cubic_meters: bolItem.items[0]['volume_in_cubic_meters'],
+                Volume_in_cubic_meters: bolItem.items[0]['volume_in_cubic_meters'] * 1,
 
                 Num_of_ctn_for_this_bol: bolItem.items.length // check on this
             })
@@ -353,7 +353,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                         Container_item_references: {
                             Ctn_item_reference: container_no
                         },
-                        Volume_in_cubic_meters: ctnGrp[0]['volume_in_cubic_meters'],
+                        Volume_in_cubic_meters: ctnGrp[0]['volume_in_cubic_meters'] * 1,
                         Num_of_ctn_for_this_bol: 1
                     })
 
@@ -369,7 +369,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                             Container_item_references: {
                                 Ctn_item_reference: container_no
                             },
-                            Volume_in_cubic_meters: item['volume_in_cubic_meters'],
+                            Volume_in_cubic_meters: item['volume_in_cubic_meters'] * 1,
                             Num_of_ctn_for_this_bol: 1
                         })
                     })
