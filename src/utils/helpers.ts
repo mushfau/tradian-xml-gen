@@ -45,8 +45,8 @@ export const createGeneralSegment = (hd: Header, bls: BL[], packageCount: number
         General_segment_id: {
             Customs_office_code: hd.customs_office_code,
             Voyage_number: hd.voyage_number,
-            Date_of_departure: hd.date_of_departure as any,
-            Date_of_arrival: hd.date_of_arrival as any
+            Date_of_departure: new Date(hd.date_of_departure).toISOString().split('T')[0] as any,
+            Date_of_arrival: new Date(hd.date_of_arrival).toISOString().split('T')[0] as any
         } as General_segment_id,
         Totals_segment: {
             Total_number_of_bols: blCount,
@@ -229,7 +229,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Number_of_packages: item['container_no_of_packages'],
                     Package_type: item['package_type'],
                     Type_of_container: item['container_type'],
-                    Empty_Full: "1/1",
+                    Empty_Full: item['empty_full'],
                     Marks1: item['seal_no'],
                     Marks2: "",
                     Marks3: "",
@@ -261,7 +261,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 Number_of_packages: bolItem.items[0]['container_no_of_packages'],
                 Package_type: bolItem.items[0]['package_type'],
                 Type_of_container: bolItem.items[0]['container_type'],
-                Empty_Full: "1/1",
+                Empty_Full: bolItem.items[0]['empty_full'],
                 Marks1: bolItem.items[0]['seal_no'],
                 Marks2: "",
                 Marks3: "",
@@ -296,7 +296,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Number_of_packages: item['container_no_of_packages'],
                     Package_type: item['package_type'],
                     Type_of_container: item['container_type'],
-                    Empty_Full: "1/1",
+                    Empty_Full: item['empty_full'],
                     Marks1: item['seal_no'],
                     Marks2: "",
                     Marks3: "",
@@ -334,7 +334,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Number_of_packages: ctnGrp[0]['container_no_of_packages'],
                     Package_type: ctnGrp[0]['package_type'],
                     Type_of_container: ctnGrp[0]['container_type'],
-                    Empty_Full: "1/1",
+                    Empty_Full: ctnGrp[0]['empty_full'],
                     Marks1: ctnGrp[0]['seal_no'],
                     Marks2: "",
                     Marks3: "",

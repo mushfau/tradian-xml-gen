@@ -25,7 +25,7 @@ export default class Tradian {
     constructor(private config: Config) {
         this.config = { ...defaultConfig, ...config };
 
-        console.log("Starting XML generation process v1.0.3 ...");
+        console.log("Starting XML generation process v1.0.6 ...");
     }
 
     /**
@@ -67,7 +67,7 @@ export default class Tradian {
             inputExcelData = this.config.inputData;
         }
         // Convert the input Excel data to JSON format
-
+        
 
         if (!inputExcelData.Header || !inputExcelData.BLs) {
             throw "Invalid sheet names"

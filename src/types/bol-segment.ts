@@ -1,7 +1,7 @@
 export type Bol_id = {
     Bol_reference: string
     Line_number: number
-    Bol_nature: number
+    Bol_nature: string
     Bol_type_code: string
     Master_bol_ref_number: string
     Unique_carrier_reference: string
@@ -78,7 +78,7 @@ export type Container_item_references = {
 export type Goods_segment = {
     Quantity?: number
     Quantity_type_code?: string
-    Number_of_packages: string
+    Number_of_packages: number
     Package_type_code: string
     Gross_mass: number
     Shipping_marks: string
@@ -87,7 +87,6 @@ export type Goods_segment = {
     Container_item_references?: Container_item_references[],
     Volume_in_cubic_meters?: number
     Num_of_ctn_for_this_bol: number
-
 }
 
 export type Freight_segment = {
