@@ -2,6 +2,7 @@ import { BL } from "../types/bl";
 import { Bol_id, Bol_segment } from "../types/bol-segment";
 import { General_segment, General_segment_id, Shipping_Agent, Totals_segment, Transport_information } from "../types/general-segment";
 import { Header } from "../types/header";
+import Big from 'big.js';
 
 export const convertArray = (inputArray: any) => {
     const [headers, ...rows] = inputArray;
@@ -52,7 +53,7 @@ export const createGeneralSegment = (hd: Header, bls: BL[], packageCount: number
             Total_number_of_bols: blCount,
             Total_number_of_packages: packageCount, // calculate this based on bls
             Total_number_of_containers: cntCount,
-            Total_gross_mass: grossMass // calculate this based on bls
+            Total_gross_mass: (grossMass.toString() as any) // calculate this based on bls
         } as Totals_segment,
         Transport_information: {
             Carrier: {
@@ -80,9 +81,9 @@ export const createGeneralSegment = (hd: Header, bls: BL[], packageCount: number
 }
 
 
-export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packageCount: number, grossMass: number } => {
+export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packageCount: number, grossMass: any } => {
     let packageCount = 0;
-    let grossMass = 0;
+    let grossMass = new Big(0)
     const ctnGroups = groupBy(bls, "container_no");
     const cntCount = countKeys(ctnGroups, "container_no")
 
@@ -200,7 +201,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
         if (bolItem.type === "0CMG") {
             bolItem.items.forEach((item: any) => {
                 packageCount += item['no_of_packages'] * 1;
-                grossMass += item['goods_gross_weight'] * 1;
+                grossMass = grossMass.add(item['goods_gross_weight'] * 1);
 
                 bol_segment.Goods_segment.push({
                     Quantity: item['quantity'],
@@ -222,7 +223,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
         if (bolItem.type === "1C1G") {
             bolItem.items.forEach((item: any) => {
                 packageCount += item['no_of_packages'] * 1;
-                grossMass += item['goods_gross_weight'] * 1;
+                grossMass = grossMass.add(item['goods_gross_weight'] * 1);
 
                 bol_segment.ctn_segment.push({
                     Ctn_reference: item['container_no'],
@@ -254,7 +255,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
 
         if (bolItem.type === "1CMG") {
             packageCount += bolItem.items[0]['container_no_of_packages'] * 1;
-            grossMass += bolItem.items[0]['container_gross_weight'] * 1;
+            grossMass = grossMass.add(bolItem.items[0]['container_gross_weight'] * 1);
 
             bol_segment.ctn_segment.push({
                 Ctn_reference: bolItem.items[0]['container_no'],
@@ -289,7 +290,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
         if (bolItem.type === "MC1G") {
             bolItem.items.forEach((item: any) => {
                 packageCount += bolItem.items[0]['container_no_of_packages'] * 1;
-                grossMass += bolItem.items[0]['container_gross_weight'] * 1;
+                grossMass = grossMass.add(bolItem.items[0]['container_gross_weight'] * 1);
 
                 bol_segment.ctn_segment.push({
                     Ctn_reference: item['container_no'],
@@ -327,7 +328,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 const ctnGrp = grpdCtns[container_no];
 
                 packageCount += ctnGrp[0]['container_no_of_packages'] * 1;
-                grossMass += ctnGrp[0]['container_gross_weight'] * 1;
+                grossMass = grossMass.add(ctnGrp[0]['container_gross_weight'] * 1);
 
                 bol_segment.ctn_segment.push({
                     Ctn_reference: container_no,
