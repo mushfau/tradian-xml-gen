@@ -177,7 +177,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 Exporter: {
                     Exporter_code: "",
                     Exporter_name: bolItem.items[0]['shipper_name']?.replaceAll("&", "&amp;"),
-                    Exporter_address: bolItem.items[0]['shipper_address']
+                    Exporter_address: bolItem.items[0]['shipper_address']?.replaceAll("&", "&amp;"),
                 },
                 FreightForwarder: {
                     FFName: "",
@@ -186,12 +186,12 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 Notify: {
                     Notify_code: "",
                     Notify_name: bolItem.items[0]['notify_name']?.replaceAll("&", "&amp;"),
-                    Notify_address: bolItem.items[0]['notify_address']
+                    Notify_address: bolItem.items[0]['notify_address']?.replaceAll("&", "&amp;"),
                 },
                 Consignee: {
                     Consignee_code: bolItem.items[0]['consignee_code'],
                     Consignee_name: bolItem.items[0]['consignee_name']?.replaceAll("&", "&amp;"),
-                    Consignee_address: bolItem.items[0]['consignee_address']
+                    Consignee_address: bolItem.items[0]['consignee_address']?.replaceAll("&", "&amp;"),
                 }
             },
             ctn_segment: [] as any,
@@ -209,7 +209,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Number_of_packages: item['no_of_packages'],
                     Package_type_code: item['package_type_code'],
                     Gross_mass: item['goods_gross_weight'],
-                    Shipping_marks: item['shipping_marks'],
+                    Shipping_marks: item['shipping_marks']?.replaceAll("&", "&amp;"),
                     Goods_description: item['goods_description']?.replaceAll("&", "&amp;"),
                     // Container_item_references: {
                     //     Ctn_item_reference: ""
@@ -231,7 +231,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Package_type: item['package_type'],
                     Type_of_container: item['container_type'],
                     Empty_Full: item['empty_full'],
-                    Marks1: item['seal_no'],
+                    Marks1: item['seal_no']?.replaceAll("&", "&amp;"),
                     Marks2: "",
                     Marks3: "",
                     Sealing_Party: "",
@@ -242,7 +242,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Number_of_packages: item['no_of_packages'],
                     Package_type_code: item['package_type_code'],
                     Gross_mass: item['goods_gross_weight'],
-                    Shipping_marks: item['shipping_marks'],
+                    Shipping_marks: item['shipping_marks']?.replaceAll("&", "&amp;"),
                     Goods_description: item['goods_description']?.replaceAll("&", "&amp;"),
                     Container_item_references: {
                         Ctn_item_reference: item['container_no']
@@ -263,7 +263,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 Package_type: bolItem.items[0]['package_type'],
                 Type_of_container: bolItem.items[0]['container_type'],
                 Empty_Full: bolItem.items[0]['empty_full'],
-                Marks1: bolItem.items[0]['seal_no'],
+                Marks1: bolItem.items[0]['seal_no']?.replaceAll("&", "&amp;"),
                 Marks2: "",
                 Marks3: "",
                 Sealing_Party: "",
@@ -276,7 +276,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Number_of_packages: item['no_of_packages'],
                     Package_type_code: item['package_type_code'],
                     Gross_mass: item['goods_gross_weight'],
-                    Shipping_marks: item['shipping_marks'],
+                    Shipping_marks: item['shipping_marks']?.replaceAll("&", "&amp;"),
                     Goods_description: item['goods_description']?.replaceAll("&", "&amp;"),
                     Container_item_references: {
                         Ctn_item_reference: bolItem.items[0]['container_no']
@@ -298,7 +298,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Package_type: item['package_type'],
                     Type_of_container: item['container_type'],
                     Empty_Full: item['empty_full'],
-                    Marks1: item['seal_no'],
+                    Marks1: item['seal_no']?.replaceAll("&", "&amp;"),
                     Marks2: "",
                     Marks3: "",
                     Sealing_Party: "",
@@ -311,7 +311,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                 Number_of_packages: bolItem.items[0]['no_of_packages'],
                 Package_type_code: bolItem.items[0]['package_type_code'],
                 Gross_mass: bolItem.items[0]['goods_gross_weight'],
-                Shipping_marks: bolItem.items[0]['shipping_marks'],
+                Shipping_marks: bolItem.items[0]['shipping_marks']?.replaceAll("&", "&amp;"),
                 Goods_description: bolItem.items[0]['goods_description']?.replaceAll("&", "&amp;"),
                 Volume_in_cubic_meters: bolItem.items[0]['volume_in_cubic_meters'] * 1,
 
@@ -336,7 +336,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                     Package_type: ctnGrp[0]['package_type'],
                     Type_of_container: ctnGrp[0]['container_type'],
                     Empty_Full: ctnGrp[0]['empty_full'],
-                    Marks1: ctnGrp[0]['seal_no'],
+                    Marks1: ctnGrp[0]['seal_no']?.replaceAll("&", "&amp;"),
                     Marks2: "",
                     Marks3: "",
                     Sealing_Party: "",
@@ -349,7 +349,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                         Number_of_packages: ctnGrp[0]['no_of_packages'],
                         Package_type_code: ctnGrp[0]['package_type_code'],
                         Gross_mass: ctnGrp[0]['goods_gross_weight'],
-                        Shipping_marks: ctnGrp[0]['shipping_marks'],
+                        Shipping_marks: ctnGrp[0]['shipping_marks']?.replaceAll("&", "&amp;"),
                         Goods_description: ctnGrp[0]['goods_description']?.replaceAll("&", "&amp;"),
                         Container_item_references: {
                             Ctn_item_reference: container_no
@@ -365,7 +365,7 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
                             Number_of_packages: item['no_of_packages'],
                             Package_type_code: item['package_type_code'],
                             Gross_mass: item['goods_gross_weight'],
-                            Shipping_marks: item['shipping_marks'],
+                            Shipping_marks: item['shipping_marks']?.replaceAll("&", "&amp;"),
                             Goods_description: item['goods_description']?.replaceAll("&", "&amp;"),
                             Container_item_references: {
                                 Ctn_item_reference: container_no
