@@ -1,6 +1,6 @@
 {
   "name": "tradian-xml-gen",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Tradian-xml-gen is a Node.js application that generates XML files from Excel data for the Tradian platform.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,13 +8,18 @@
     "@types/big.js": "^6.2.2",
     "@types/convert-excel-to-json": "^1.7.4",
     "@types/dotenv": "^8.2.0",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^20.14.8",
+    "mocha": "^11.7.1",
+    "ts-mocha": "^11.1.0",
+    "ts-node": "^10.9.2",
     "tsup": "^8.1.0",
     "typescript": "^5.5.2"
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "test": "mocha -r ts-node/register 'test/**/*.ts'"
   },
   "repository": {
     "type": "git",

@@ -25,37 +25,14 @@ export default class Tradian {
     constructor(private config: Config) {
         this.config = { ...defaultConfig, ...config };
 
-        console.log("Starting XML generation process v1.0.6 ...");
+        console.log("Starting XML generation process v1.0.9 ...");
     }
 
     /**
      * Generates XML from the provided Excel data.
      * @returns {string} The generated XML string.
      */
-
-    // generateXML() {
-    //     let inputExcelData: any;
-    //     if (this.config.cli) {
-    //         inputExcelData = excelToJson({ source: this.config.inputData });
-    //     } else {
-    //         inputExcelData = this.config.inputData;
-    //     }
-    //     if (!inputExcelData.Header || !inputExcelData.BLs) {
-    //         throw "Invalid sheet names"
-    //     }
-
-    //     let xmlDataStr = '';
-
-    //     if (this.config.type === 'MBL' || this.config.type === 'ADDMBL') {
-    //         xmlDataStr = "<Master_BL_XML/>"
-    //     }
-    //     if (this.config.type === 'HBL' || this.config.type === 'ADDHBL') {
-    //         xmlDataStr = "<House_BL_XML/>"
-    //     }
-
-    //     return `<?xml version="1.0" encoding="utf-8"?>\n${xmlDataStr}`;
-    // }
-    generateXML() {
+    generateXML(): string {
 
         let inputExcelData: any;
 
@@ -67,11 +44,12 @@ export default class Tradian {
             inputExcelData = this.config.inputData;
         }
         // Convert the input Excel data to JSON format
-        
+
 
         if (!inputExcelData.Header || !inputExcelData.BLs) {
             throw "Invalid sheet names"
         }
+
 
         // // if (!validateHeaders(allowedColumns.header, inputExcelData.Header[0])) {
         // //     throw "Invalid Header columns"
@@ -81,9 +59,8 @@ export default class Tradian {
         // //     throw "Invalid BL columns"
         // // }
 
-        const header = convertArray(inputExcelData.Header)[0];
-        const bls = convertArray(inputExcelData.BLs);
-
+        const header = inputExcelData.Header[0] //convertArray(inputExcelData.Header)[0];
+        const bls = inputExcelData.BLs //convertArray(inputExcelData.BLs);
 
         const builderOptions = {
             processEntities: false,
@@ -99,21 +76,6 @@ export default class Tradian {
         const builder = new XMLBuilder(builderOptions);
         let xmlDataStr = builder.build(awmds);
         return `<?xml version="1.0" encoding="utf-8"?>\n${xmlDataStr}`;
-
-        // const builderOptions = {
-        //     processEntities: false,
-        //     format: true,
-        //     ignoreAttributes: false,
-        //     arrayNodeName: this.config.mainNodeName,
-        // };
-        // const general_segment: General_segment = createGeneralSegment(header, bls);
-        // const bol_segment: Bol_segment[] = createBolSegment(groupBy(bls, "bol_no"));
-
-        // const awmds: Awmds[] = [{ General_segment: general_segment, Bol_segment: bol_segment }];
-        // const builder = new XMLBuilder(builderOptions);
-        // let xmlDataStr = builder.build(awmds);
-        // return `<?xml version="1.0" encoding="utf-8"?>\n${xmlDataStr}`;
-        // return "done"
     }
 }
 
