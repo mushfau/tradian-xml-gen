@@ -156,13 +156,14 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
     const bol_segments: Bol_segment[] = [];
 
     blsForBol.forEach((bolItem: any, blIndex: number) => {
+        
         const bol_segment: any = {
             Bol_id: {
                 Bol_reference: bolItem['bol_no'],
-                Line_number: blIndex,
+                Line_number: blIndex + 1,
                 Bol_nature: 23,
-                Bol_type_code: bolItem['cargo_type'] || "BL",
-                Master_bol_ref_number: bolItem['master_bol_ref_number'] || "",
+                Bol_type_code: bolItem.items[0]['cargo_type'] || "BL",
+                Master_bol_ref_number: bolItem.items[0]['master_bol_ref_number'] || "",
                 Unique_carrier_reference: ""
             },
             Load_unload_place: {

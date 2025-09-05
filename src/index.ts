@@ -25,7 +25,7 @@ export default class Tradian {
     constructor(private config: Config) {
         this.config = { ...defaultConfig, ...config };
 
-        console.log("Starting XML generation process v1.0.9 ...");
+        console.log("Starting XML generation process v1.0.12 ...");
     }
 
     /**
