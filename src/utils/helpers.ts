@@ -161,7 +161,7 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
             Bol_id: {
                 Bol_reference: bolItem['bol_no'],
                 Line_number: blIndex + 1,
-                Bol_nature: header.bol_nature,
+                Bol_nature: header.regime,
                 Bol_type_code: bolItem.items[0]['cargo_type'] || "BL",
                 Master_bol_ref_number: bolItem.items[0]['master_bol_ref_number'] || "",
                 Unique_carrier_reference: ""
