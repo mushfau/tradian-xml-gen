@@ -81,7 +81,7 @@ export const createGeneralSegment = (hd: Header, bls: BL[], packageCount: number
 }
 
 
-export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packageCount: number, grossMass: any } => {
+export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_segment[], packageCount: number, grossMass: any } => {
     let packageCount = 0;
     let grossMass = new Big(0)
     const ctnGroups = groupBy(bls, "container_no");
@@ -156,12 +156,12 @@ export const createBolSegment = (bls: any): { bol_segments: Bol_segment[], packa
     const bol_segments: Bol_segment[] = [];
 
     blsForBol.forEach((bolItem: any, blIndex: number) => {
-        
+
         const bol_segment: any = {
             Bol_id: {
                 Bol_reference: bolItem['bol_no'],
                 Line_number: blIndex + 1,
-                Bol_nature: 23,
+                Bol_nature: header.bol_nature,
                 Bol_type_code: bolItem.items[0]['cargo_type'] || "BL",
                 Master_bol_ref_number: bolItem.items[0]['master_bol_ref_number'] || "",
                 Unique_carrier_reference: ""

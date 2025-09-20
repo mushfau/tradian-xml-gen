@@ -69,7 +69,7 @@ export default class Tradian {
             arrayNodeName: this.config.mainNodeName,
         };
 
-        const bol_segments: any = createBolSegment(bls);
+        const bol_segments: any = createBolSegment(bls, header);
         const general_segment: General_segment = createGeneralSegment(header, bls, bol_segments.packageCount, bol_segments.grossMass);
 
         const awmds: Awmds[] = [{ General_segment: general_segment, Bol_segment: bol_segments.bol_segments }];
