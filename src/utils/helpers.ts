@@ -161,7 +161,7 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
             Bol_id: {
                 Bol_reference: bolItem['bol_no'],
                 Line_number: blIndex + 1,
-                Bol_nature: header.regime,
+                Bol_nature: "23",
                 Bol_type_code: bolItem.items[0]['cargo_type'] || "BL",
                 Master_bol_ref_number: bolItem.items[0]['master_bol_ref_number'] || "",
                 Unique_carrier_reference: ""
@@ -200,6 +200,8 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
             Value_segment: {}
         }
         if (bolItem.type === "0CMG") {
+            console.log("Case 0: 0 ctns, M goods, 1 bol");
+            
             bolItem.items.forEach((item: any) => {
                 packageCount += item['no_of_packages'] * 1;
                 grossMass = grossMass.add(item['goods_gross_weight'] * 1);
@@ -222,6 +224,7 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
         }
 
         if (bolItem.type === "1C1G") {
+            console.log("Case 1: 1 ctn, 1 goods, 1 bol");
             bolItem.items.forEach((item: any) => {
                 packageCount += item['no_of_packages'] * 1;
                 grossMass = grossMass.add(item['goods_gross_weight'] * 1);
@@ -255,6 +258,7 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
         }
 
         if (bolItem.type === "1CMG") {
+            console.log("Case 2: 1 ctn, multiple goods, 1 bol");
             packageCount += bolItem.items[0]['container_no_of_packages'] * 1;
             grossMass = grossMass.add(bolItem.items[0]['container_gross_weight'] * 1);
 
@@ -289,9 +293,11 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
         }
 
         if (bolItem.type === "MC1G") {
+            console.log("Case 3: multiple ctns, 1 goods, 1 bol");
             bolItem.items.forEach((item: any) => {
-                packageCount += bolItem.items[0]['container_no_of_packages'] * 1;
-                grossMass = grossMass.add(bolItem.items[0]['container_gross_weight'] * 1);
+                packageCount += item['container_no_of_packages'] * 1;
+                grossMass = grossMass.add(item['container_gross_weight'] * 1);
+                // console.log("packageCount",packageCount, grossMass.toString())
 
                 bol_segment.ctn_segment.push({
                     Ctn_reference: item['container_no'],
@@ -321,7 +327,7 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
         }
 
         if (bolItem.type === "MCMG") {
-
+            console.log("Case 4: multiple ctns, multiple goods, 1 bol");
             const grpdCtns = groupBy(bolItem.items, "container_no");
 
 
