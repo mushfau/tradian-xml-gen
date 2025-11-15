@@ -12,7 +12,7 @@ export const convertArray = (inputArray: any) => {
 }
 
 export const groupBy = (array: any, key: any) => array.reduce((result: any, item: any) => {
-    (result[item[key]] = result[item[key]] || []).push(item);
+    (result[item[key]?.replace(/\n/g, '')?.trim()] = result[item[key]?.replace(/\n/g, '')?.trim()] || []).push(item);
     return result;
 }, {});
 
@@ -31,6 +31,7 @@ export const createGeneralSegment = (hd: Header, bls: BL[], packageCount: number
 
     const ctnGroups = groupBy(bls, "container_no");
     const cntCount = countKeys(ctnGroups, "container_no")
+    // console.log("Container Groups in General Segment:", cntCount);
 
     // const packageCount = bls.reduce((acc: any, bl: any) => {
     //     const packages = cntCount === 0 ? (bl['no_of_packages'] * 1) : (bl['container_no_of_packages'] * 1)
@@ -161,7 +162,7 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
             Bol_id: {
                 Bol_reference: bolItem['bol_no'],
                 Line_number: blIndex + 1,
-                Bol_nature: "23",
+                Bol_nature: header.regime,
                 Bol_type_code: bolItem.items[0]['cargo_type'] || "BL",
                 Master_bol_ref_number: bolItem.items[0]['master_bol_ref_number'] || "",
                 Unique_carrier_reference: ""
@@ -294,10 +295,15 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
 
         if (bolItem.type === "MC1G") {
             console.log("Case 3: multiple ctns, 1 goods, 1 bol");
+            let bol_pkg_count = 0;
+            let bol_gross_mass = new Big(0);
+            let  Container_item_references = [] as any;
             bolItem.items.forEach((item: any) => {
                 packageCount += item['container_no_of_packages'] * 1;
                 grossMass = grossMass.add(item['container_gross_weight'] * 1);
-                // console.log("packageCount",packageCount, grossMass.toString())
+                
+                bol_pkg_count += item['container_no_of_packages'] * 1;
+                bol_gross_mass = bol_gross_mass.add(item['container_gross_weight'] * 1);
 
                 bol_segment.ctn_segment.push({
                     Ctn_reference: item['container_no'],
@@ -312,14 +318,22 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
                     Empty_weight: 0,
                     Goods_Weight: item['container_gross_weight']
                 })
+                Container_item_references.push({
+                    Ctn_item_reference: item['container_no']
+                })
             })
 
+
             bol_segment.Goods_segment.push({
-                Number_of_packages: bolItem.items[0]['no_of_packages'],
+                // Number_of_packages: bolItem.items[0]['no_of_packages'],
+                Number_of_packages: bol_pkg_count,
                 Package_type_code: bolItem.items[0]['package_type_code'],
-                Gross_mass: bolItem.items[0]['goods_gross_weight'],
+                // Gross_mass: bolItem.items[0]['goods_gross_weight'],
+
+                Gross_mass: bol_gross_mass.toNumber(),
                 Shipping_marks: bolItem.items[0]['shipping_marks']?.replaceAll("&", "&amp;"),
                 Goods_description: bolItem.items[0]['goods_description']?.replaceAll("&", "&amp;"),
+                Container_item_references: Container_item_references,
                 Volume_in_cubic_meters: bolItem.items[0]['volume_in_cubic_meters'] * 1,
 
                 Num_of_ctn_for_this_bol: bolItem.items.length // check on this
@@ -329,6 +343,8 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
         if (bolItem.type === "MCMG") {
             console.log("Case 4: multiple ctns, multiple goods, 1 bol");
             const grpdCtns = groupBy(bolItem.items, "container_no");
+
+            // console.log("Grouped Containers:", grpdCtns);
 
 
             Object.keys(grpdCtns).forEach((container_no) => {
@@ -368,6 +384,7 @@ export const createBolSegment = (bls: any, header: any): { bol_segments: Bol_seg
                 } else {
                     // If there are multiple goods in the same container, we need to handle them separately
                     ctnGrp.forEach((item: any) => {
+                        // console.log("Multiple goods in container:", container_no, item);
                         bol_segment.Goods_segment.push({
                             Number_of_packages: item['no_of_packages'],
                             Package_type_code: item['package_type_code'],
